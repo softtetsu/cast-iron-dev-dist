@@ -1,0 +1,289 @@
+{
+  "contract_name": "BKDBI",
+  "abi": [
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "bucketNo",
+          "type": "uint256"
+        },
+        {
+          "name": "maker",
+          "type": "address"
+        }
+      ],
+      "name": "getEarnings",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "bucketNo",
+          "type": "uint256"
+        },
+        {
+          "name": "maker",
+          "type": "address"
+        }
+      ],
+      "name": "isHot",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "bucketNo",
+          "type": "uint256"
+        },
+        {
+          "name": "maker",
+          "type": "address"
+        }
+      ],
+      "name": "getStock",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "bucketNo",
+          "type": "uint256"
+        },
+        {
+          "name": "maker",
+          "type": "address"
+        }
+      ],
+      "name": "isCancelled",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "bucketNo",
+          "type": "uint256"
+        },
+        {
+          "name": "slots",
+          "type": "uint256"
+        },
+        {
+          "name": "unsettled",
+          "type": "uint256"
+        },
+        {
+          "name": "makerfee",
+          "type": "uint256"
+        },
+        {
+          "name": "unitprice",
+          "type": "uint256"
+        }
+      ],
+      "name": "closer",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        },
+        {
+          "name": "",
+          "type": "uint256"
+        },
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "bucketNo",
+          "type": "uint256"
+        },
+        {
+          "name": "maker",
+          "type": "address"
+        },
+        {
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "createList",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "bucketNo",
+          "type": "uint256"
+        },
+        {
+          "name": "maker",
+          "type": "address"
+        }
+      ],
+      "name": "isSeller",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "bucketNo",
+          "type": "uint256"
+        },
+        {
+          "name": "maker",
+          "type": "address"
+        }
+      ],
+      "name": "canPayOut",
+      "outputs": [
+        {
+          "name": "answer",
+          "type": "bool"
+        },
+        {
+          "name": "value",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "bucketNo",
+          "type": "uint256"
+        },
+        {
+          "name": "maker",
+          "type": "address"
+        }
+      ],
+      "name": "doCancel",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "exchange",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [],
+      "name": "admin",
+      "outputs": [
+        {
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "name": "bucketNo",
+          "type": "uint256"
+        },
+        {
+          "name": "maker",
+          "type": "address"
+        }
+      ],
+      "name": "deleteList",
+      "outputs": [
+        {
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    }
+  ],
+  "unlinked_binary": "0x",
+  "networks": {
+    "1100": {
+      "links": {},
+      "events": {},
+      "updated_at": 1511752671527
+    }
+  },
+  "schema_version": "0.0.5",
+  "updated_at": 1512426277181
+}

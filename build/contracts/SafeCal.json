@@ -1,0 +1,153 @@
+{
+  "contract_name": "SafeCal",
+  "abi": [
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "numerator",
+          "type": "uint256"
+        },
+        {
+          "name": "denominator",
+          "type": "uint256"
+        },
+        {
+          "name": "precision",
+          "type": "uint256"
+        }
+      ],
+      "name": "percent",
+      "outputs": [
+        {
+          "name": "quotient",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "a",
+          "type": "uint256"
+        },
+        {
+          "name": "b",
+          "type": "uint256"
+        }
+      ],
+      "name": "add",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "quotient",
+          "type": "uint256"
+        },
+        {
+          "name": "precision",
+          "type": "uint256"
+        },
+        {
+          "name": "target",
+          "type": "uint256"
+        }
+      ],
+      "name": "remains",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "quotient",
+          "type": "uint256"
+        },
+        {
+          "name": "precision",
+          "type": "uint256"
+        },
+        {
+          "name": "target",
+          "type": "uint256"
+        }
+      ],
+      "name": "ratio",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "a",
+          "type": "uint256"
+        },
+        {
+          "name": "b",
+          "type": "uint256"
+        }
+      ],
+      "name": "sub",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "name": "a",
+          "type": "uint256"
+        },
+        {
+          "name": "b",
+          "type": "uint256"
+        }
+      ],
+      "name": "mul",
+      "outputs": [
+        {
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "payable": false,
+      "type": "function"
+    }
+  ],
+  "unlinked_binary": "0x",
+  "networks": {},
+  "schema_version": "0.0.5",
+  "updated_at": 1512426277182
+}
