@@ -1,15 +1,11 @@
 'use strict';
 
 const uuid = require('uuid/v4');
-const Wrap3 = require(__dirname + '/libs/Wrap3.js');
-
-const BucketObj = require(__dirname + '/contracts/Buckets.json');
-const BKDBIObj = require(__dirname + '/contracts/BucketDB.json');
-const TokenObj = require(__dirname + '/contracts/TradeToken.json');
-const BucksObj = require(__dirname + '/contracts/BucketToken.json');
+const Exchanges = require(__dirname + '/Exchanges.js');
+const BucksObj = require(__dirname + '/../build/contracts/BucketToken.json');
 
 // Main Class
-class CastIron extends Wrap3 {
+class CastIron extends Exchanges {
 
 	// Notes:
 	// 1).
@@ -32,12 +28,10 @@ class CastIron extends Wrap3 {
 	// 5).
 	// Future Cast-Iron should implement simple contract check before applying them, this can be done while being pointed to
 	// specific market / token / db from registry. Check before apply.
-	constructor(networkID) {
-		super(networkID);
+	constructor(networkID, registryAddress) {
+		super(networkID, registryAddress);
 
-		this.addrEtherBalance = addr => {
-			return this.web3.toDecimal(this.web3.fromWei(this.web3.eth.getBalance(addr), 'ether'));
-		};
+		// For now, BucketToken itself is still managed separatedly ...
 
 		this.addrTokenBalance = addr => {
 			return this.web3.toDecimal(this.T.balanceOf(addr).dividedBy(this.B.atoken()));
@@ -281,22 +275,13 @@ class CastIron extends Wrap3 {
 			return true;
 		};
 
-		this.BucketLab = this.web3.eth.contract(BucketObj.abi);
-		this.BKDBILab = this.web3.eth.contract(BKDBIObj.abi);
-		this.TradeToken = this.web3.eth.contract(TokenObj.abi);
 		this.BucketToken = this.web3.eth.contract(BucksObj.abi);
+		this.BT = this.BucketToken.at(BucksObj.networks[networkID].address);
+		this.oneBuck = this.web3.toBigNumber(10).toPower(8); //bucketToken decimal is 8
+
 		this.maxClosing = 100;
 		this.maxGasUsage = 5000000;
 		this.jobQ = {};
-
-		// Buckets and BucketDB ABI will be further managed / integrated with Token market registry
-		// related codebase. For now this version of CastIron only assume single token market.
-		this.B = this.BucketLab.at(BucketObj.networks[networkID].address);
-		this.D = this.BKDBILab.at(BKDBIObj.networks[networkID].address);
-		this.T = this.TradeToken.at(TokenObj.networks[networkID].address);
-		this.BT = this.BucketToken.at(BucksObj.networks[networkID].address);
-
-		this.oneBuck = this.web3.toBigNumber(10).toPower(this.B.buckDecimals());
 	}
 
 	// Ethereum web3 and 11be stuffs

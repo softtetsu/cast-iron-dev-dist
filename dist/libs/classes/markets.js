@@ -7,14 +7,16 @@
 // and any other token or exchange specific functions.
 //
 // Should be parent for CastIronAPI, and BucketStat.
+const Wrap3 = require( __dirname + '/Wrap3.js');
 
-const StandardToken = require( __dirname + '/contracts/StandardToken.json' );
-const BucketObj     = require( __dirname + '/contracts/Buckets.json' );
+const StandardToken = require( __dirname + '/../build/contracts/StandardToken.json' );
+const BucketObj     = require( __dirname + '/../build/contracts/Buckets.json' );
+const BKDBIObj      = require( __dirname + '/../build/contracts/BucketDB.json' );
 // const RegistryObj = require( __dirname + '/contracts/MarketRegistry.json' ); // eventually ...
 
 class Exchanges extends Wrap3 {
 	constructor(networkID, registryAddress) {
-		super(networID);
+		super(networkID);
 
 		this.registry  = this.web3.toAddress(registryAddress); // check for valid address
 		// eventually with the following ...
@@ -23,6 +25,9 @@ class Exchanges extends Wrap3 {
 
 		this.TokenABI  = this.web3.eth.contract(StandardToken.abi);
 		this.BucketABI = this.web3.eth.contract(BucketObj.abi);
+		this.BKDBIABI  = this.web3.eth.contract(BKDBIObj.abi);
+
+		this.B = null; this.D = null; this.T = null;
 	}
 
 	tokenInfo = tokenSymbol => 
@@ -30,7 +35,10 @@ class Exchanges extends Wrap3 {
 		// Mocked token registry records ... the actual on-chain contract could look different.
 		const mocked_records = 
 		{
-			'TKA': {'TokenContract': '0x', 'Name': 'Trade Token A', 'ExchangeContract': '0x', 'since': 118000 }, 
+			'TKA': { 'TokenContract': '0x1c073e54aa2def345553165517094ea721b6df67',
+                                 'Name': 'Trade Token A',
+                                 'ExchangeContract': '0x1b7d5e77d84a86d65baaeb406bde88553cf02952',
+                                 'since': 118000 },  
 			'TKB': {'TokenContract': '0x', 'Name': 'Trade Token B', 'ExchangeContract': '0x', 'since': 119000 }, 
 			'TKC': {'TokenContract': '0x', 'Name': 'Trade Token C', 'ExchangeContract': '0x', 'since': 100000 } 
 		};
@@ -49,10 +57,6 @@ class Exchanges extends Wrap3 {
 	// It also means that all input here could be passed in via prepareQ
 	selectMarket = tokenSymbol => 
 	{
-		let tokenData = this.tokenInfo(tokenSymbol);
-
-		if (tokenData.since === 0) throw new Error(`Invalid or unregistered token ${tokenSymbol}`); 
-
 		// Before we change the inputs for processQ, here we will temporarily 
 		// use the B and T attributes ... this should be fixed by passing local
 		// variables of the contract bindings into processQ (again, via prepareQ)
@@ -64,15 +68,22 @@ class Exchanges extends Wrap3 {
 		// function works using existing code contexts. It is not intended to be real
 		// solution.
 		const __enterShop = (resolve, reject) => {
+			let tokenData = this.tokenInfo(tokenSymbol);
+
 			// since this function is called "selectMarket", it should only be selected
 			// in this function if not selected yet. All previous queue job should reset
 			// this.B back to null.
-			if (this.B != null) {
+			if (this.B != null || this.D != null || this.T != null) {
 				setTimeout( () => __enterShop(resolve, reject), 500 );
-			} else if (this.B.token() != tokenData.TokenContract) {
-				reject(false);
+			} else if (tokenData.since === 0) {
+				reject(`Invalid or unregistered token ${tokenSymbol}`);
 			} else {
 				this.B = this.BucketABI.at(tokenData.ExchangeContract);
+				this.D = this.BKDBIABI.at(this.B.DB());
+
+				if (this.D.exchange() != tokenData.ExchangeContract) { 
+					reject(`Token: ${tokenSymbol} has Mismatching address between registry and contract`);
+				}
 
 				// Here we just use standard ERC20 ABI
 				this.T = this.TokenABI.at(tokenData.TokenContract);

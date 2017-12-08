@@ -11,11 +11,11 @@
     "mkwrp": "./node_modules/.bin/babel --plugins transform-class-properties,babel-plugin-syntax-object-rest-spread ./libs/classes/wrapper.js -o ./libs/Wrap3.js",
     "mkexg": "./node_modules/.bin/babel --plugins transform-class-properties,babel-plugin-syntax-object-rest-spread ./libs/classes/markets.js -o ./libs/Exchanges.js",
     "mkocl": "./node_modules/.bin/babel --plugins transform-class-properties,babel-plugin-syntax-object-rest-spread ./libs/classes/oracle.js -o ./libs/PriceFeeds.js",
-    "mkapi": "./node_modules/.bin/babel --plugins transform-class-properties,babel-plugin-syntax-object-rest-spread ./libs/classes/queues.js -o ./build/CastIronAPI.js",
-    "mkobs": "./node_modules/.bin/babel --plugins transform-class-properties,babel-plugin-syntax-object-rest-spread ./libs/classes/status.js -o ./build/BucketStat.js",
-    "build": "npm run mkwrp && npm run mkexg && npm run mkocl && npm run mkapi && npm run mkobs && cp -v ./dispatcher.js ./marketWatch.js ./build/ && mkdir -p ./build/libs && cp -v ./libs/*.js ./build/libs",
-    "clean": "rm -vfr ./libs/Wrap3.js ./libs/Exchanges.js ./libs/PriceFeeds.js ./build/*.js ./build/libs",
-    "dist": "npm run clean && npm run build && cp -rv ./libs/classes ./build/libs && cp ./package.json ./build/"
+    "mkapi": "./node_modules/.bin/babel --plugins transform-class-properties,babel-plugin-syntax-object-rest-spread ./libs/classes/queues.js -o ./libs/CastIronAPI.js",
+    "mkops": "./node_modules/.bin/babel --plugins transform-class-properties,babel-plugin-syntax-object-rest-spread ./libs/classes/status.js -o ./libs/BucketStats.js",
+    "build": "npm run mkwrp && npm run mkexg && npm run mkocl && npm run mkops && npm run mkapi",
+    "clean": "rm -vfr ./libs/Wrap3.js ./libs/Exchanges.js ./libs/PriceFeeds.js ./libs/CastIronAPI.js ./libs/BucketStats.js ./dist",
+    "dist": "npm run clean && npm run build && mkdir -p ./dist && cp -rv ./libs ./dispatcher.js ./marketWatch.js ./build ./package.json ./dist/"
   },
   "keywords": [],
   "author": "",

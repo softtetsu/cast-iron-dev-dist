@@ -1,39 +1,26 @@
 'use strict';
  
 const uuid  = require('uuid/v4');
-const Wrap3 = require( __dirname + '/libs/Wrap3.js');
-
-const BucketObj  = require( __dirname + '/contracts/Buckets.json' );
-const BKDBIObj   = require( __dirname + '/contracts/BucketDB.json' );
-const TokenObj   = require( __dirname + '/contracts/TradeToken.json' );
-const BucksObj   = require( __dirname + '/contracts/BucketToken.json' );
+const Exchanges = require( __dirname + '/Exchanges.js');
+const BucksObj  = require( __dirname + '/../build/contracts/BucketToken.json' );
 
 // Main Class
-class CastIron extends Wrap3 {
-	constructor(networkID)
+class CastIron extends Exchanges {
+	constructor(networkID, registryAddress)
 	{
-		super(networkID);
+		super(networkID, registryAddress);
 
-		this.BucketLab   = this.web3.eth.contract(BucketObj.abi);
-		this.BKDBILab    = this.web3.eth.contract(BKDBIObj.abi);
-		this.TradeToken  = this.web3.eth.contract(TokenObj.abi);
+		// For now, BucketToken itself is still managed separatedly ...
 		this.BucketToken = this.web3.eth.contract(BucksObj.abi);
+         	this.BT = this.BucketToken.at(BucksObj.networks[networkID].address);
+		this.oneBuck = this.web3.toBigNumber(10).toPower(8); //bucketToken decimal is 8
+
 		this.maxClosing  = 100;
 		this.maxGasUsage = 5000000;
 		this.jobQ = {};
-
-		// Buckets and BucketDB ABI will be further managed / integrated with Token market registry
-		// related codebase. For now this version of CastIron only assume single token market.
-         	this.B  = this.BucketLab.at(BucketObj.networks[networkID].address);
-         	this.D  = this.BKDBILab.at(BKDBIObj.networks[networkID].address);
-         	this.T  = this.TradeToken.at(TokenObj.networks[networkID].address);
-         	this.BT = this.BucketToken.at(BucksObj.networks[networkID].address);
-
-		this.oneBuck = this.web3.toBigNumber(10).toPower(this.B.buckDecimals());
 	}
 
 	// Ethereum web3 and 11be stuffs
-	addrEtherBalance = addr => { return this.web3.toDecimal(this.web3.fromWei(this.web3.eth.getBalance(addr), 'ether')); }
 	addrTokenBalance = addr => { return this.web3.toDecimal(this.T.balanceOf(addr).dividedBy(this.B.atoken())); }
 
 	prepareQ = () => {

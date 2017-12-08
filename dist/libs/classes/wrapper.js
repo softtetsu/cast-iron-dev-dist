@@ -17,10 +17,16 @@ class Wrap3 {
 
     		this.web3.toAddress = address => {
 			let addr = String(this.web3.toHex(this.web3.toBigNumber(address)));
-        		if (addr.length === 42) return addr
 
-        		let pz = pl - addr.length;
+        		if (addr.length === 42) {
+				return addr
+			} else if (addr.length > 42) {
+				throw "Not valid address";
+			}
+
+        		let pz = 42 - addr.length;
         		addr = addr.replace('0x', '0x' + '0'.repeat(pz));
+
         		return addr;
 		};
 
@@ -29,6 +35,8 @@ class Wrap3 {
 
 		this.networkID = networkID;
 	}
+
+	addrEtherBalance = addr => { return this.web3.toDecimal(this.web3.fromWei(this.web3.eth.getBalance(addr), 'ether')); }
 
 	unlockViaIPC = passwd => addr => {
                 const __unlockToExec = (resolve, reject) => {
