@@ -8,14 +8,14 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "mkwrp": "./node_modules/.bin/babel --plugins transform-class-properties,babel-plugin-syntax-object-rest-spread ./libs/classes/wrapper.js -o ./libs/Wrap3.js",
-    "mkexg": "./node_modules/.bin/babel --plugins transform-class-properties,babel-plugin-syntax-object-rest-spread ./libs/classes/markets.js -o ./libs/Exchanges.js",
-    "mkocl": "./node_modules/.bin/babel --plugins transform-class-properties,babel-plugin-syntax-object-rest-spread ./libs/classes/oracle.js -o ./libs/PriceFeeds.js",
-    "mkapi": "./node_modules/.bin/babel --plugins transform-class-properties,babel-plugin-syntax-object-rest-spread ./libs/classes/queues.js -o ./libs/CastIronAPI.js",
-    "mkops": "./node_modules/.bin/babel --plugins transform-class-properties,babel-plugin-syntax-object-rest-spread ./libs/classes/status.js -o ./libs/BucketStats.js",
-    "build": "npm run mkwrp && npm run mkexg && npm run mkocl && npm run mkops && npm run mkapi",
-    "clean": "rm -vfr ./libs/Wrap3.js ./libs/Exchanges.js ./libs/PriceFeeds.js ./libs/CastIronAPI.js ./libs/BucketStats.js ./dist",
-    "dist": "npm run clean && npm run build && mkdir -p ./dist && cp -rv ./libs ./dispatcher.js ./marketWatch.js ./build ./package.json ./dist/"
+    "w": "./node_modules/.bin/babel --plugins transform-class-properties,babel-plugin-syntax-object-rest-spread ./core/classes/wrapper.js -o ./core/Wrap3.js",
+    "e": "./node_modules/.bin/babel --plugins transform-class-properties,babel-plugin-syntax-object-rest-spread ./apps/11be/classes/markets.js -o ./apps/11be/Exchanges.js",
+    "o": "./node_modules/.bin/babel --plugins transform-class-properties,babel-plugin-syntax-object-rest-spread ./apps/11be/classes/oracle.js -o ./apps/11be/PriceFeeds.js",
+    "q": "./node_modules/.bin/babel --plugins transform-class-properties,babel-plugin-syntax-object-rest-spread ./core/classes/queues.js -o ./core/JobQueue.js",
+    "m": "./node_modules/.bin/babel --plugins transform-class-properties,babel-plugin-syntax-object-rest-spread ./apps/11be/classes/status.js -o ./apps/11be/MarketStats.js",
+    "build": "npm run w && npm run e && npm run o && npm run q && npm run m",
+    "clean": "rm -vfr ./core/Wrap3.js ./apps/11be/Exchanges.js ./apps/11be/PriceFeeds.js ./core/JobQueue.js ./apps/11be/MarketStats.js ./dist",
+    "dist": "npm run clean && npm run build && mkdir -p ./dist && cp -rv ./apps ./core ./libs ./scripts/{dataDrivenQ,marketWatch}.js ./build ./package.json ./dist/"
   },
   "keywords": [],
   "author": "",

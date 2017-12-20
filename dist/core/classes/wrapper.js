@@ -5,6 +5,19 @@ const net  = require('net');
 const os   = require('os');
 const path = require('path');
 
+// For web3.eth, "CUE" simply pointing to existing web3 functions.
+// the reason to place them under "CUE" is to unify the job queue
+// interface regardless the transaction is smart contract related 
+// or not. Its "CUE" type is called "Web3"; "contract" is called
+// "eth".
+//
+// web3.eth related conditions are imported with default setups, 
+// similar to smart contracts.
+
+const web3EthFulfill = require( __dirname + '/conditions/Web3/Fulfill.js' );
+const web3EthSanity  = require( __dirname + '/conditions/Web3/Sanity.js' );
+const allConditions  = { ...web3EthSanity, ...web3EthFulfill };
+
 // Main Class
 class Wrap3 {
 	constructor(networkID)
@@ -34,11 +47,19 @@ class Wrap3 {
     		this.ipc3.setProvider(new Web3.providers.IpcProvider(this.ipcPath, net));
 
 		this.networkID = networkID;
+
+		// this.CUE[type][contract][call](...args, txObj)
+		// Only web3.eth.sendTransaction requires password unlock.
+		this.CUE = { 'Web3': { 'eth': {'sendTransaction': this.web3.eth.sendTransaction } } };
+
+		// ... Thus the conditions should only need to sanity check or fulfill this function
+		Object.keys(allConditions).map( (f) => { if(typeof(this[f]) === 'undefined') this[f] = allConditions[f] } );
 	}
 
 	addrEtherBalance = addr => { return this.web3.toDecimal(this.web3.fromWei(this.web3.eth.getBalance(addr), 'ether')); }
 
-	unlockViaIPC = passwd => addr => {
+	unlockViaIPC = passwd => addr => 
+	{
                 const __unlockToExec = (resolve, reject) => {
                         this.ipc3.personal.unlockAccount(addr, passwd, 12, (error, result) => {
                                 if (error) {
@@ -54,7 +75,8 @@ class Wrap3 {
                 return new Promise(__unlockToExec);
         }
 
-	closeIPC = () => {
+	closeIPC = () => 
+	{
                 const __closeIPC = (resolve, reject) => {
                         if (this.ipc3 && this.ipc3.hasOwnProperty('net') == true) {
                                 console.log("Shutdown ipc connection!!!");
@@ -71,7 +93,8 @@ class Wrap3 {
                 return new Promise(__closeIPC);
         }
 
-	getReceipt = (txHash, interval) => {
+	getReceipt = (txHash, interval) => 
+	{
     		const transactionReceiptAsync = (resolve, reject) => {
         		this.web3.eth.getTransactionReceipt(txHash, (error, receipt) => {
             			if (error) {
@@ -91,6 +114,21 @@ class Wrap3 {
     		} else {
         		throw new Error("Invalid Type: " + txHash);
     		}
+	}
+
+	// txObj is just standard txObj in ethereum transaction calls
+	gasCostEst = (addr, txObj) => 
+	{
+		if (
+			txObj.hasOwnProperty('gas') == false
+		     || txObj.hasOwnProperty('gasPrice') == false
+		) { throw new Error("txObj does not contain gas-related information"); }
+
+		let gasBN = this.web3.toBigNumber(txObj.gas);
+                let gasPriceBN = this.web3.toBigNumber(txObj.gasPrice);
+                let gasCost = gasBN.mul(gasPriceBN);
+
+		return gasCost;
 	}
 }
 
