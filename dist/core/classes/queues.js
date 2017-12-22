@@ -11,6 +11,7 @@ class JobQueue extends Wrap3 {
 
                 this.version = '1.0'; // API version
                 this.jobQ = {};	// Should use setter / getter
+                this.rcdQ = {};	// Should use setter / getter
 
 		// fulfiller (for fulfill conditions)
 		this.fulfiller = this.web3.eth.accounts[0];
@@ -95,6 +96,7 @@ class JobQueue extends Wrap3 {
 			} else {
 				let myid = uuid();
 				this.jobQ[myid] = {};
+				this.rcdQ[myid] = [];
 
 				resolve(myid);
 			}
@@ -112,7 +114,7 @@ class JobQueue extends Wrap3 {
 
         	Object.keys(passes).map((addr) => {
                 	if (typeof(this.jobQ[Q][addr]) === 'undefined' || this.jobQ[Q][addr].length == 0) {
-				delete Q[addr];
+				delete this.jobQ[Q][addr];
                         	return;
                 	}
 
@@ -121,6 +123,7 @@ class JobQueue extends Wrap3 {
                 	                this.jobQ[Q][addr].map((o) => {
                         	                let tx = this.CUE[o.type][o.contract][o.call](...o.args, o.txObj);
 						console.log(`QID: ${Q} | ${o.type}: ${addr} doing ${o.call} on ${o.contract}, txhash: ${tx}`);
+						this.rcdQ[Q].push({addr, tx, 'type': o.type, 'token': o.contract, 'call': o.call, ...o.txObj});
                                 	})
 	                        }).then( () => {
         	                        this.ipc3.personal.lockAccount(addr, (e,r) => {
@@ -129,13 +132,14 @@ class JobQueue extends Wrap3 {
 						delete this.jobQ[Q][addr];
 	                                });
         	                })
-                	})
-			.catch((error) => { console.log(error); } );
+
+                	}).catch((error) => { console.log(error); delete this.jobQ[Q][addr]; return Promise.resolve(); } );
+
         	});
 
-		results = results.then(this.closeQ(Q));
+		results = results.then(() => { return this.closeQ(Q) });
 
-		return results;
+		return results
 	}
 
 	closeQ = Q => {
@@ -146,6 +150,8 @@ class JobQueue extends Wrap3 {
 				delete this.jobQ[Q];
 				resolve(true);
 			} else if (Object.keys(this.jobQ[Q]).length > 0 && this.ipc3 && this.ipc3.hasOwnProperty('net') == true){
+				console.log("DEBUG: Hanging..");
+				console.log(this.jobQ[Q]);
 				setTimeout( () => __closeQ(resolve, reject), 500 );
 			} else {
 				console.log("Uh Oh...... (closeQ)");
